@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - Mini Drive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      color: #fff;
+      text-align: center;
+    }
+
+    .card h2 {
+      font-size: 32px;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .form-group input {
+      width: 90%;
+      padding: 15px 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #eee;
+      font-size: 16px;
+      pointer-events: none;
+      transition: 0.3s ease all;
+    }
+
+    .form-group span {
+        display: flex;
+        margin-top: 5px;
+        color: #cc0f0f !important;
+        font-size: 13px;
+        padding-left: 5px;
+    }
+
+    .error-block {
+        background: rgba(255,0,0,0.2);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+
+    .error-text {
+        display: flex;
+        color: #cc0f0f;
+        font-size: 13px;
+        margin-top: 5px;
+        padding-left: 5px
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+      top: -8px;
+      left: 10px;
+      font-size: 12px;
+      color: black;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #eee;
+    }
+
+    p a {
+      color: #43cea2;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    p a:hover {
+      color: #2fbb87;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Sign Up</h2>
+
+    <!-- Display non-field errors (like password mismatch) -->
+    {% if form.non_field_errors %}
+    <div class="error-block">
+      {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        {{ form.username }}
+        <label>Username</label>
+        {% if form.username.errors %}
+        <span class="error-text">
+          {{ form.username.errors.0 }}
+        </span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.email }}
+        <label>Email</label>
+        {% if form.email.errors %}
+        <span class="error-text">
+          {{ form.email.errors.0 }}
+        </span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password1 }}
+        <label>Password</label>
+        {% if form.password1.errors %}
+        <span class="error-text">
+          {{ form.password1.errors.0 }}
+        </span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password2 }}
+        <label>Confirm Password</label>
+        {% if form.password2.errors %}
+        <span class="error-text">{{ form.password2.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Drive - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Global styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1000px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      font-size: 36px;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .top-bar form button,
+    .top-bar a {
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .top-bar form button:hover,
+    .top-bar a:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .upload-form {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .upload-form .upload-row {
+        display: flex;
+        align-items: center;   
+        gap: 10px;            
+        flex-wrap: wrap;       
+        margin-top: 10px;
+    }
+
+    .upload-form input[type="file"] {
+      display: block;
+    }
+
+    .upload-form button {
+      background-color: #43cea2;
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .upload-form button:hover {
+      background-color: #2fbb87;
+      transform: translateY(-2px);
+    }
+
+    h2 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-size: 28px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* File card styling */
+    .file-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .file-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .file-card a {
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .file-card a:hover {
+      text-decoration: underline;
+    }
+
+    .delete-btn {
+      background-color: #ff4b5c;
+      padding: 6px 12px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background-color: #e63b4f;
+      transform: translateY(-2px);
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #fff;
+      font-style: italic;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+
+    @media(max-width: 600px){
+      .file-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+      {% if request.user.is_superuser %}
+        <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+      {% endif %}
+    </div>
+
+    <h1>Welcome, {{ request.user.username }}</h1>
+
+    <div class="upload-form">
+      <h2>Upload a file</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+         <div class="upload-row">
+        {{ form.file }}  <!-- Only the input field, no label -->
+        <button type="submit">Upload</button>
+        </div>
+        {% comment %} <button type="submit">Upload</button> {% endcomment %}
+      </form>
+    </div>
+
+    <h2>Your Files</h2>
+
+    {% if files %}
+      {% for file in files %}
+        <div class="file-card">
+          <div>
+            <a href="{{ file.file.url }}" target="_blank">{{ file.file.name|slice:"8:" }}</a>
+            — {{ file.uploaded_at }}
+          </div>
+          <a class="delete-btn" href="{% url 'delete_file' file.id %}">Delete</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty-message">No files uploaded yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
