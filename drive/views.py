@@ -5,6 +5,7 @@ from django.contrib.auth import login
 from django.http import HttpResponseForbidden
 from .models import UploadedFile
 from .forms import FileUploadForm
+from .forms import SignUpForm
 
 # check if user is admin
 def is_admin(user):
@@ -13,13 +14,13 @@ def is_admin(user):
 # signup view
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('dashboard')
     else:
-        form = UserCreationForm()
+        form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 
 # user dashboard
