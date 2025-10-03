@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-a8dri((1nv)lg0r1bn_2-ezy7ng5l+zqpf178--2^u5u7%4m$j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mini-drive-hf47.onrender.com']
 
 
 # Application definition
