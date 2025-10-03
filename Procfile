@@ -1,1 +1,1 @@
-web: gunicorn Mini-Drive.wsgi
+web: gunicorn fileuploader.wsgi
